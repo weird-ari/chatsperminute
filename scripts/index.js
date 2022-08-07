@@ -1,15 +1,26 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const channel = urlParams.get('channel');
-const time = urlParams.get('window');
-console.log(channel);
+const channel = urlParams.get('channel') || "stanz";
+const time = urlParams.get('window') || 21;
+const limit = urlParams.get('limit') || 0;
+const decimals = parseInt(urlParams.get('decimals')) || 2;
+const ease = parseInt(urlParams.get('ease')) || 25;
+console.log(channel, time, limit, decimals, ease);
 
-let chatsPerTime = 0.0;
+let cpm = 0.0;
 
 
 let div = document.getElementById("cpm");
 
-setInterval(() => { div.innerHTML = (chatsPerTime * 60 / time).toFixed(2) }, 250);
+setInterval(() => {
+    div.innerHTML = Math.abs(cpm).toFixed(decimals);
+
+    if (cpm < limit) {
+        div.classList.add("warning");
+    } else {
+        div.classList.remove("warning");
+    }
+}, 100);
 
 // CONNECT TO TWITCH CHAT
 const client = new tmi.Client({
@@ -19,11 +30,15 @@ const client = new tmi.Client({
 client.connect();
 client.on('message', async (channel, tags, message, self) => {
     //console.log(`${tags['display-name']}: ${message}`);
-    chatsPerTime += 1;
-    setTimeout(() => {
-        chatsPerTime -= 1;
-    }, time * 1000);
+    for (i = 0; i <= ease; i++) {
+        setTimeout(() => {
+            cpm += 60 / time / (ease + 1);
+        }, time * 1000 * i / 100);
+    }
+
+    for (i = 100 - ease; i <= 100; i++) {
+        setTimeout(() => {
+            cpm -= 60 / time / (ease + 1);
+        }, time * 1000 * i / 100);
+    }
 });
-
-
-
