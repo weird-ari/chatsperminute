@@ -1,6 +1,6 @@
 # chatsperminute
 
--> https://weird-ari.github.io/chatsperminute/for standard values
+-> https://weird-ari.github.io/chatsperminute/ for standard values
 (equivalent to https://weird-ari.github.io/chatsperminute/?channel=stanz&limit=0&window=21&decimals=2&ease=25)
 
 ## for the nerds  : 
